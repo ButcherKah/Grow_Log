@@ -1,246 +1,183 @@
-# 🌱 GrowLog v2
+# 🌱 GrowLog v3
 
-Diário de cultivo indoor para celular. PWA — funciona offline, instala na tela inicial, não depende de servidor nem de conta.
-
----
-
-## Instalação rápida (GitHub Pages)
-
-1. Crie um repositório no GitHub (pode ser privado)
-2. Suba os arquivos: `index.html`, `app.js`, `styles.css`, `sw.js`, `manifest.json`, `README.md`
-3. Vá em **Settings → Pages → Branch: main → Save**
-4. Aguarde ~1 min e acesse `https://seu-usuario.github.io/nome-do-repo`
+Diário de cultivo indoor PWA — registre cada etapa da planta à colheita, do seu celular, sem internet.
 
 ---
 
-## Instalar no celular como app
+## Instalação
 
-### iOS (Safari)
+**iOS Safari**
 1. Abra o link do GitHub Pages no Safari
-2. Toque no botão de compartilhar (□↑)
-3. Toque em **"Adicionar à Tela de Início"**
-4. O app abre em tela cheia, sem barra do navegador
+2. Toque em compartilhar → "Adicionar à Tela de Início"
+3. O app aparece como ícone na home
 
-### Android (Chrome)
+**Android Chrome**
 1. Abra o link no Chrome
-2. Toque nos 3 pontos → **"Adicionar à tela inicial"**
-3. Ou aguarde o banner automático de instalação
-
-> **Importante:** sempre abra pelo ícone instalado, não pelo navegador. Os dados ficam salvos localmente no celular via IndexedDB — atualizações no GitHub não apagam seus registros.
+2. Menu (⋮) → "Adicionar à tela inicial"
 
 ---
 
-## Como usar
+## Navegação
 
-### 1. Cadastrar uma planta
+Quatro abas na barra inferior:
 
-Toque em **Nova Planta** (botão + ou ação rápida na Home).
-
-O modal tem **3 abas:**
-
-#### 🌱 Básico
-| Campo | O que preencher |
+| Aba | Função |
 |---|---|
-| Nome / Strain | Nome da planta, ex: `Lemon Drizzle #2` |
-| Tipo | **Auto** (automática) ou **Foto** (fotoperíodo) |
-| Data de início | Data em que plantou / germinou |
-| Ciclo de rega | Quantas regas **com nutriente** + quantas **sem**. Ex: `2 + 1` |
-| Semanas de Vega | Estimativa de semanas no vegetativo (usado no countdown) |
-| Semanas de Flor | Estimativa de semanas na floração (usado no countdown) |
-| Observações | Banco de sementes, notas gerais |
+| **Início** | Visão geral, lista de plantas, alertas |
+| **Planta** | Detalhe da planta ativa (aparece após abrir uma planta) |
+| **Biblioteca** | Substratos, receitas de solo e nutrientes cadastrados |
+| **Analytics** | KPIs, gráficos de barras, médias por planta |
 
-#### 🪱 Solo
-Escolha entre **Inerte** ou **Orgânico**:
-- **Inerte:** substrato/marca (ex: `Coco coir + perlita 70/30`) e notas
-- **Orgânico:** receita completa (proporções, ingredientes) e notas de maturação
+---
 
-#### 💡 Setup
-| Campo | Exemplo |
+## Plantas
+
+Toque no **＋** (botão flutuante) na tela Início para cadastrar uma planta.
+
+O cadastro tem 4 abas:
+
+- **Básico** — nome/strain, tipo (auto/foto), data de início, ciclo de rega, semanas de veg/flor, observações
+- **Solo** — tipo (inerte, orgânico, organomineral, coco), receita, marca
+- **Setup** — LED (modelo, chip, watts), fotoperíodo (horário liga/apaga), exaustor, ventilador, timer, tomada inteligente, irrigação automática, sensores (CO₂, VPD, luz, câmera), tenda
+- **Origem** — planta mãe (para genealogia de clones)
+
+---
+
+## Registros
+
+Na tela **Planta**, toque em **＋ Registrar** (botão verde) ou nos atalhos:
+
+| Atalho | Abre |
 |---|---|
-| Tamanho da tenda | `60×60×140 cm` |
-| LED — Modelo | `QB240` |
-| Tipo de LED | `LM301H` |
-| Potência real | `120 W` |
-| Exaustor | `4" 190 m³/h` |
-| Ventilador | `Clip fan 15cm` |
-| Temporizador | `Outlet timer 18/6` |
-| Notas | Filtro de carvão, controlador de temperatura... |
+| 💧 Rega | Registro com campos de volume, pH, EC e nutrientes |
+| 🌡️ Clima | Registro com temperatura e umidade |
+
+**Tipos de registro disponíveis:**
+
+`📋 Geral` `💧 Rega` `🌡️ Clima` `💡 Luz` `✂️ Poda` `🪢 LST` `🍃 Defoliação` `🪴 Transplante` `🚿 Flush` `🧪 Runoff`
+
+### Campos automáticos
+- **Dias e semana** são calculados automaticamente a partir da data
+- **VPD** é calculado ao preencher temperatura + umidade
+- **PPFD e DLI** são calculados ao preencher lux + horários LED
+
+### Badges de referência
+Cada valor registrado recebe um badge colorido comparado às tabelas de referência para LM301H indoor:
+
+- 🟢 Dentro da faixa ideal
+- 🟡 Fora da faixa (tolerância 10%)
+- 🔴 Muito acima ou abaixo
+
+As tabelas são diferentes para **automáticas** e **fotoperíodo**, por semana do ciclo.
 
 ---
 
-### 2. Navegar para a planta
+## Estágio
 
-Na Home, toque no card da planta. A tela de detalhe mostra:
+Toque em **editar** ao lado do estágio na tela da planta. Estágios disponíveis:
 
-- **Ribbon de estágio** — estágio atual, dias de vida, semana no estágio. Toque no lápis para alterar
-- **Card de próxima rega** — indica se a próxima rega é com ou sem nutriente, baseado no ciclo configurado e no histórico de regas registradas
-- **Countdown de colheita** — barra de progresso até a data estimada (aparece quando você preenche semanas de veg + flor)
-- **Card VPD** — VPD calculado do último registro com temperatura e umidade
+`🌰 Germinação` → `🌱 Plântula` → `🍃 Vegetativo` → `🌸 Floração` → `✂️ Colheita`
+
+Ao entrar em **Colheita**, o app abre automaticamente o relatório de colheita.
+
+Dias e semana são automáticos. É possível sobrescrever manualmente se necessário.
 
 ---
 
-### 3. Adicionar um registro
+## Cards de status
 
-Toque em **+ Registro**, **💧 Rega** ou **🌡️ Clima** na tela da planta.
+Na tela da planta, acima dos botões de ação:
 
-Escolha o **tipo de ação** no topo do modal:
+- **Próxima rega** — mostra se a próxima é com ou sem nutriente, com base no ciclo configurado (ex: 2 com + 1 sem)
+- **Countdown** — dias restantes até a colheita estimada, com barra de progresso (aparece se semanas de veg/flor estiverem preenchidas)
+- **VPD** — valor e zona ideal do último registro com temperatura e umidade
 
-| Tipo | O que registra |
+---
+
+## Tabs da planta
+
+| Tab | Conteúdo |
 |---|---|
-| 📋 Geral | Ambiente + luz + rega (tudo junto) |
-| 💧 Rega | Ambiente + dados de rega |
-| 🌡️ Clima | Ambiente + luz |
-| 💡 Luz | Só dados de luz |
-| ✂️ Poda | Técnica (topping, fimming...) + nós removidos |
-| 🪢 LST | Técnica (LST, SCROG, supercrop...) + descrição |
-| 🍃 Defoliação | Folhas removidas |
-| 🪴 Transplante | Vaso de origem → destino + substrato |
-| 🚿 Flush | Volume e pH da água de lavagem |
-| 🧪 Runoff | pH e EC do escorrimento |
-
-**Campos calculados automaticamente:**
-- **PPFD** — calculado a partir do Lux (fator LM301H: 0.0185)
-- **DLI** — calculado a partir do PPFD + fotoperíodo (horário liga/apaga)
-- **VPD** — calculado a partir de Temperatura + Umidade, com zona colorida
-
-**Nutrientes:** ative o toggle "Adicionar nutrientes" dentro da seção de rega, e adicione quantos quiser (nome + ml/L).
+| **Timeline** | Registros agrupados por dia, em ordem cronológica reversa |
+| **Registros** | Lista compacta com chips de valores e badges de referência |
+| **Genealogia** | Árvore mostrando planta mãe, clones e a planta atual |
 
 ---
 
-### 4. Badges de faixa de referência 🟢🟡🔴
+## Biblioteca
 
-Cada registro exibe badges coloridos comparando seus valores com as tabelas de referência para **LM301H indoor sem CO₂**:
+Cadastre insumos para reutilizar nos registros:
 
-| Badge | Significado |
+- **Substratos** — nome, tipo, marca, notas
+- **Receitas de solo** — lista de componentes com proporções
+- **Nutrientes** — nome, tipo, dose mínima e máxima (ml/L)
+
+Nutrientes cadastrados aparecem como **autocomplete** no campo de nutrientes da rega.
+
+---
+
+## Analytics
+
+KPIs globais: total de plantas, registros, água e temperatura média.
+
+Gráficos de barras:
+- Ações por tipo (rega, poda, clima...)
+- Água total por planta (em litros)
+
+Bloco por planta com médias de temperatura, umidade, pH, EC e dados do setup.
+
+---
+
+## Dados / Backup
+
+Botão de dados no menu (ícone ⋮ ou via tela Início):
+
+| Opção | Descrição |
 |---|---|
-| 🟢 `X.X–X.X` | Dentro da faixa ideal |
-| 🟡 `X.X–X.X` | Próximo do limite (tolerância 10%) |
-| 🔴 `X.X–X.X` | Fora da faixa ideal |
+| 💾 Backup JSON | Exporta todos os dados em JSON — use para migrar entre dispositivos |
+| 📥 Importar Backup | Restaura a partir de um JSON (substitui os dados atuais) |
+| 📊 Exportar CSV | Exporta todos os registros de todas as plantas |
 
-Os parâmetros avaliados são: **pH, EC, VPD, Temperatura, Umidade Relativa**. A faixa muda automaticamente conforme a semana do estágio e o tipo da planta (auto ou fotoperíodo).
+Na tela da planta, o botão **CSV** exporta só aquela planta.
 
-> Passe o dedo sobre o badge para ver a faixa completa daquela semana.
-
----
-
-### 5. Editar um registro
-
-Na tela de detalhe da planta, toque em qualquer registro para abrir os detalhes. Na parte inferior aparecem três botões:
-
-- **🗑 Excluir** — remove permanentemente
-- **✏️ Editar** — reabre o formulário preenchido com os dados do registro para edição
-- **Fechar** — volta sem alterar
+> ⚠️ Faça backup regularmente. Os dados ficam no IndexedDB do navegador — limpar o cache do browser apaga tudo.
 
 ---
 
-### 6. Alterar o estágio
+## Relatório de colheita
 
-Na tela da planta, toque no **lápis** no ribbon de estágio. Selecione o novo estágio e salve. Os dias e semanas são recalculados automaticamente a partir da data de mudança.
+Gerado automaticamente ao entrar no estágio **Colheita**. Contém:
 
-Ao marcar **Colheita**, o relatório de colheita abre automaticamente.
-
----
-
-### 7. Relatório de colheita
-
-Abre automaticamente ao marcar estágio **Colheita**, ou manualmente pelo modal de estágio. Mostra:
-
-- Resumo completo do ciclo (duração, regas, água total, treinamentos)
-- Médias ambientais (temp, UR, VPD, pH, EC, PPFD)
-- Linha do tempo de estágios com duração de cada fase
-- Campos para peso úmido, peso seco, avaliação (1–5⭐) e notas finais
-
-Exporta como CSV completo com todos os registros.
+- Resumo do ciclo (duração, regas, água total, flushes)
+- Médias ambientais (temp, UR, VPD, pH, EC)
+- Linha do tempo por estágio
+- Campos para peso úmido, peso seco e avaliação (1–5 ⭐)
+- Exportação em CSV
 
 ---
 
-### 8. Backup e exportação
+## Tecnologia
 
-Acesse via ícone **Dados** na barra inferior ou **Backup / CSV** na Home.
-
-| Opção | Formato | Uso |
-|---|---|---|
-| Backup JSON | `.json` | Backup completo — importar em outro dispositivo |
-| Importar Backup | `.json` | Restaura todos os dados de um backup anterior |
-| Exportar CSV | `.csv` | Planilha com todos os registros de todas as plantas |
-| CSV da planta | `.csv` | Na tela da planta → botão 📊 CSV |
-
-> **Faça backup antes de desinstalar o app ou trocar de celular.** Os dados ficam apenas no dispositivo.
+- PWA puro — HTML + CSS + JS sem framework
+- IndexedDB como storage principal, localStorage como fallback
+- Funciona offline após o primeiro acesso
+- Compatível com iOS Safari e Android Chrome
 
 ---
 
-## Persistência de dados
+## Setup de desenvolvimento
 
-O app usa **IndexedDB** como storage principal, com fallback duplo para localStorage. IndexedDB tem quota muito maior (~50% do disco livre) e não é limpo pelo Safari no iOS como o localStorage antigo.
+```bash
+# Clonar o repositório
+git clone https://github.com/seu-usuario/growlog.git
+cd growlog
 
-Mesmo assim, **dados locais podem ser perdidos** se você:
-- Desinstalar o app
-- Limpar dados do navegador / Safari manualmente
-- Trocar de celular sem fazer backup
-
-**Recomendação:** faça backup JSON uma vez por semana.
-
----
-
-## Estrutura de arquivos
-
-```
-├── index.html      — Toda a estrutura HTML e modais
-├── app.js          — Toda a lógica: DB, cálculos, renders, modais
-├── styles.css      — Tema dark, componentes, responsivo
-├── sw.js           — Service Worker (cache offline)
-└── manifest.json   — Configuração PWA (ícone, nome, cor)
+# Servir localmente (qualquer servidor estático serve)
+npx serve .
+# ou
+python3 -m http.server 8080
 ```
 
-Não há dependências externas além de:
-- Google Fonts (DM Mono + Familjen Grotesk) — carregadas online, dispensáveis offline
-- Service Worker nativo do browser para cache
+Acesse `http://localhost:8080` no navegador.
 
----
-
-## Tabelas de referência embutidas
-
-As tabelas são calibradas para **LEDs LM301H, cultivo indoor, sem suplementação de CO₂**.
-
-### Automáticas
-| Semana | VPD | UR | Temp | EC | pH |
-|---|---|---|---|---|---|
-| 1 | 0.4–0.8 | 70–80% | 24–26°C | 0.2–0.5 | 5.8–6.0 |
-| 2 | 0.5–0.8 | 65–75% | 24–27°C | 0.2–0.5 | 5.8–6.0 |
-| 3–4 | 0.6–1.0 | 58–70% | 24–28°C | 0.5–1.2 | 5.8–6.1 |
-| 5–6 | 0.9–1.2 | 50–65% | 24–28°C | 1.2–2.0 | 5.9–6.2 |
-| 7–8 | 1.1–1.4 | 40–55% | 22–27°C | 1.8–2.4 | 6.0–6.3 |
-| 9–10 | 1.2–1.5 | 40–48% | 22–26°C | 2.0–2.8 | 6.1–6.4 |
-| 11+ | 1.3–1.5 | 35–45% | 21–26°C | 0.2–0.8 | 6.0–6.3 |
-
-### Fotoperíodo
-| Semana | VPD | UR | Temp | EC | pH |
-|---|---|---|---|---|---|
-| 1–2 | 0.4–0.8 | 70–80% | 24–26°C | 0.2–0.5 | 5.8–6.0 |
-| 3–6 | 0.6–1.2 | 50–70% | 24–28°C | 0.5–1.6 | 5.8–6.2 |
-| 7–10 | 1.0–1.4 | 45–58% | 23–28°C | 1.6–2.4 | 6.0–6.3 |
-| 11–13 | 1.2–1.5 | 38–50% | 21–27°C | 2.0–2.8 | 6.1–6.4 |
-| 14–16 | 1.3–1.6 | 35–45% | 20–26°C | 2.4–3.2 | 6.2–6.5 |
-| 17+ | 1.3–1.6 | 35–45% | 20–26°C | 0.2–0.8 | 6.0–6.3 |
-
----
-
-## Changelog
-
-### v2.0
-- IndexedDB como storage principal (mais seguro no iOS)
-- Edição de registros (✏️ no detalhe)
-- Ciclo de rega personalizável (N com + M sem)
-- Card de próxima rega na tela da planta
-- Cadastro de solo (inerte/orgânico com receita)
-- Cadastro de setup (tenda, LED, exaustor, ventilador, temporizador)
-- Badges de faixa de referência em pH, EC, VPD, Temp e UR
-- Tabelas de referência embutidas (auto + fotoperíodo, LM301H)
-
-### v1.0
-- Cadastro de plantas e registros
-- VPD, PPFD, DLI calculados automaticamente
-- Timeline visual do ciclo
-- Countdown de colheita
-- Relatório de colheita com médias
-- Export CSV e backup JSON
+Para deploy: suba os arquivos na raiz do repositório e ative GitHub Pages em **Settings → Pages → Branch: main**.
