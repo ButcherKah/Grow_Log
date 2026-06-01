@@ -17,6 +17,18 @@ Diário de cultivo indoor PWA — registre cada etapa da planta à colheita, do 
 
 ---
 
+## Fluxo recomendado
+
+A biblioteca é o ponto de partida. Antes de cadastrar plantas, popule a biblioteca com seus insumos e setup:
+
+1. **Biblioteca → 💡 Setup** — cadastre sua tenda, LED, sensores e automações
+2. **Biblioteca → 🪨 Solo** — cadastre seus substratos
+3. **Biblioteca → 📋 Receitas** — cadastre receitas de solo orgânico
+4. **Biblioteca → 🧪 Nutrientes** — cadastre seus nutrientes com dose mínima e máxima
+5. **Início → ＋** — cadastre a planta e selecione setup e solo da biblioteca
+
+---
+
 ## Navegação
 
 Quatro abas na barra inferior:
@@ -25,31 +37,55 @@ Quatro abas na barra inferior:
 |---|---|
 | **Início** | Visão geral, lista de plantas, alertas |
 | **Planta** | Detalhe da planta ativa (aparece após abrir uma planta) |
-| **Biblioteca** | Substratos, receitas de solo e nutrientes cadastrados |
+| **Biblioteca** | Substratos, receitas, nutrientes e setups cadastrados |
 | **Analytics** | KPIs, gráficos de barras, médias por planta |
+
+---
+
+## Biblioteca
+
+Central de insumos e equipamentos. Cadastre uma vez, reutilize em qualquer cultivo.
+
+### 🪨 Solo
+Substratos individuais — nome, tipo (inerte, orgânico, organomineral, coco), marca e notas.
+
+### 📋 Receitas
+Receitas de solo — lista de componentes com proporções e notas de preparo.
+
+### 🧪 Nutrientes
+- Nome, tipo (mineral, orgânico, adubo sólido)
+- Dose mínima e máxima em ml/L
+- Aparecem como **autocomplete** no campo de nutrientes da rega
+
+### 💡 Setup
+Setup completo do cultivo:
+- LED — modelo, chip, potência
+- Fotoperíodo — horário liga/apaga
+- Estrutura — tamanho da tenda
+- Clima — exaustor, ventilador
+- Automações — timer, tomada inteligente, irrigação automática
+- Sensores — CO₂, VPD/UR/T°, luz, câmera
 
 ---
 
 ## Plantas
 
-Toque no **＋** (botão flutuante) na tela Início para cadastrar uma planta.
-
-O cadastro tem 4 abas:
+Toque no **＋** (botão flutuante) na tela Início. O cadastro tem 4 abas:
 
 - **Básico** — nome/strain, tipo (auto/foto), data de início, ciclo de rega, semanas de veg/flor, observações
-- **Solo** — tipo (inerte, orgânico, organomineral, coco), receita, marca
-- **Setup** — LED (modelo, chip, watts), fotoperíodo (horário liga/apaga), exaustor, ventilador, timer, tomada inteligente, irrigação automática, sensores (CO₂, VPD, luz, câmera), tenda
+- **Solo** — selecione da biblioteca (substratos ou receitas)
+- **Setup** — selecione da biblioteca
 - **Origem** — planta mãe (para genealogia de clones)
 
 ---
 
 ## Registros
 
-Na tela **Planta**, toque em **＋ Registrar** (botão verde) ou nos atalhos:
+Na tela **Planta**, toque em **＋ Registrar** ou nos atalhos:
 
 | Atalho | Abre |
 |---|---|
-| 💧 Rega | Registro com campos de volume, pH, EC e nutrientes |
+| 💧 Rega | Registro com volume, pH, EC e nutrientes |
 | 🌡️ Clima | Registro com temperatura e umidade |
 
 **Tipos de registro disponíveis:**
@@ -57,39 +93,35 @@ Na tela **Planta**, toque em **＋ Registrar** (botão verde) ou nos atalhos:
 `📋 Geral` `💧 Rega` `🌡️ Clima` `💡 Luz` `✂️ Poda` `🪢 LST` `🍃 Defoliação` `🪴 Transplante` `🚿 Flush` `🧪 Runoff`
 
 ### Campos automáticos
-- **Dias e semana** são calculados automaticamente a partir da data
-- **VPD** é calculado ao preencher temperatura + umidade
-- **PPFD e DLI** são calculados ao preencher lux + horários LED
+- **Dias e semana** calculados a partir da data de início
+- **VPD** calculado ao preencher temperatura + umidade
+- **PPFD e DLI** calculados ao preencher lux + horários LED
 
 ### Badges de referência
-Cada valor registrado recebe um badge colorido comparado às tabelas de referência para LM301H indoor:
+Cada valor recebe um badge comparado às tabelas de referência para LM301H indoor, diferenciadas por tipo (auto/foto) e semana do ciclo:
 
 - 🟢 Dentro da faixa ideal
-- 🟡 Fora da faixa (tolerância 10%)
+- 🟡 Fora da faixa com tolerância de 10%
 - 🔴 Muito acima ou abaixo
-
-As tabelas são diferentes para **automáticas** e **fotoperíodo**, por semana do ciclo.
 
 ---
 
 ## Estágio
 
-Toque em **editar** ao lado do estágio na tela da planta. Estágios disponíveis:
+Toque em **editar** ao lado do estágio. Estágios disponíveis:
 
 `🌰 Germinação` → `🌱 Plântula` → `🍃 Vegetativo` → `🌸 Floração` → `✂️ Colheita`
 
 Ao entrar em **Colheita**, o app abre automaticamente o relatório de colheita.
 
-Dias e semana são automáticos. É possível sobrescrever manualmente se necessário.
-
 ---
 
 ## Cards de status
 
-Na tela da planta, acima dos botões de ação:
+Na tela da planta, acima do botão Registrar:
 
-- **Próxima rega** — mostra se a próxima é com ou sem nutriente, com base no ciclo configurado (ex: 2 com + 1 sem)
-- **Countdown** — dias restantes até a colheita estimada, com barra de progresso (aparece se semanas de veg/flor estiverem preenchidas)
+- **Próxima rega** — com ou sem nutriente, baseado no ciclo configurado (ex: 2 com + 1 sem)
+- **Countdown** — dias restantes até colheita estimada com barra de progresso
 - **VPD** — valor e zona ideal do último registro com temperatura e umidade
 
 ---
@@ -98,21 +130,9 @@ Na tela da planta, acima dos botões de ação:
 
 | Tab | Conteúdo |
 |---|---|
-| **Timeline** | Registros agrupados por dia, em ordem cronológica reversa |
-| **Registros** | Lista compacta com chips de valores e badges de referência |
-| **Genealogia** | Árvore mostrando planta mãe, clones e a planta atual |
-
----
-
-## Biblioteca
-
-Cadastre insumos para reutilizar nos registros:
-
-- **Substratos** — nome, tipo, marca, notas
-- **Receitas de solo** — lista de componentes com proporções
-- **Nutrientes** — nome, tipo, dose mínima e máxima (ml/L)
-
-Nutrientes cadastrados aparecem como **autocomplete** no campo de nutrientes da rega.
+| **Timeline** | Registros agrupados por dia, ordem cronológica reversa |
+| **Registros** | Lista compacta com chips e badges de referência |
+| **Genealogia** | Árvore mostrando planta mãe, clones e planta atual |
 
 ---
 
@@ -122,31 +142,29 @@ KPIs globais: total de plantas, registros, água e temperatura média.
 
 Gráficos de barras:
 - Ações por tipo (rega, poda, clima...)
-- Água total por planta (em litros)
+- Água total por planta em litros
 
-Bloco por planta com médias de temperatura, umidade, pH, EC e dados do setup.
+Bloco por planta com médias de temperatura, umidade, pH, EC, dados do setup e solo.
 
 ---
 
 ## Dados / Backup
 
-Botão de dados no menu (ícone ⋮ ou via tela Início):
-
 | Opção | Descrição |
 |---|---|
-| 💾 Backup JSON | Exporta todos os dados em JSON — use para migrar entre dispositivos |
+| 💾 Backup JSON | Exporta todos os dados — use para migrar entre dispositivos |
 | 📥 Importar Backup | Restaura a partir de um JSON (substitui os dados atuais) |
-| 📊 Exportar CSV | Exporta todos os registros de todas as plantas |
+| 📊 Exportar CSV | Exporta registros de todas as plantas |
 
 Na tela da planta, o botão **CSV** exporta só aquela planta.
 
-> ⚠️ Faça backup regularmente. Os dados ficam no IndexedDB do navegador — limpar o cache do browser apaga tudo.
+> ⚠️ Faça backup regularmente. Os dados ficam no IndexedDB do navegador — limpar o cache apaga tudo.
 
 ---
 
 ## Relatório de colheita
 
-Gerado automaticamente ao entrar no estágio **Colheita**. Contém:
+Gerado automaticamente ao entrar em **Colheita**. Contém:
 
 - Resumo do ciclo (duração, regas, água total, flushes)
 - Médias ambientais (temp, UR, VPD, pH, EC)
@@ -165,19 +183,17 @@ Gerado automaticamente ao entrar no estágio **Colheita**. Contém:
 
 ---
 
-## Setup de desenvolvimento
+## Deploy
 
 ```bash
-# Clonar o repositório
+# Clonar
 git clone https://github.com/seu-usuario/growlog.git
 cd growlog
 
-# Servir localmente (qualquer servidor estático serve)
+# Servir localmente
 npx serve .
 # ou
 python3 -m http.server 8080
 ```
 
-Acesse `http://localhost:8080` no navegador.
-
-Para deploy: suba os arquivos na raiz do repositório e ative GitHub Pages em **Settings → Pages → Branch: main**.
+GitHub Pages: **Settings → Pages → Branch: main → Save**
