@@ -49,6 +49,7 @@ const DB = (() => {
     if (!Array.isArray(_data.library.substrates)) _data.library.substrates = [];
     if (!Array.isArray(_data.library.recipes))    _data.library.recipes    = [];
     if (!Array.isArray(_data.library.nutrients))  _data.library.nutrients  = [];
+    if (!Array.isArray(_data.library.setups))     _data.library.setups     = [];
   }
 
   function _loadFromLS() {
@@ -500,20 +501,25 @@ const Library = (() => {
   function renderScreen() {
     const lib = DB.getLib();
     // Substrates
-    const subEl = document.getElementById('lib-substrates');
+    const subEl = document.getElementById('lib-substrates-list');
     if (subEl) subEl.innerHTML = lib.substrates.length
-      ? lib.substrates.map(s => _itemHTML('substrates', s, SOIL_TYPE_LABEL[s.type]||'🪨', s.notes||'')).join('')
+      ? lib.substrates.map(s => _itemHTML('substrates', s, SOIL_TYPE_LABEL[s.type]||'🪨', s.brand||s.notes||'')).join('')
       : '<div class="empty-hint">Nenhum substrato cadastrado.</div>';
     // Recipes
-    const recEl = document.getElementById('lib-recipes');
+    const recEl = document.getElementById('lib-recipes-list');
     if (recEl) recEl.innerHTML = lib.recipes.length
-      ? lib.recipes.map(r => _itemHTML('recipes', r, '📋', r.recipe?.substring(0,50)||'')).join('')
+      ? lib.recipes.map(r => _itemHTML('recipes', r, '📋', r.recipe?.substring(0,60)||'')).join('')
       : '<div class="empty-hint">Nenhuma receita cadastrada.</div>';
     // Nutrients
-    const nutEl = document.getElementById('lib-nutrients');
+    const nutEl = document.getElementById('lib-nutrients-list');
     if (nutEl) nutEl.innerHTML = lib.nutrients.length
       ? lib.nutrients.map(n => _itemHTML('nutrients', n, NUT_TYPE_LABEL[n.type]||'🧪', n.doseMin?`${n.doseMin}–${n.doseMax} ml/L`:'')).join('')
       : '<div class="empty-hint">Nenhum nutriente cadastrado.</div>';
+    // Setups
+    const setupEl = document.getElementById('lib-setups-list');
+    if (setupEl) setupEl.innerHTML = (lib.setups||[]).length
+      ? (lib.setups||[]).map(s => _itemHTML('setups', s, '💡', [s.ledModel, s.tentSize].filter(Boolean).join(' · '))).join('')
+      : '<div class="empty-hint">Nenhum setup cadastrado.</div>';
   }
 
   function _itemHTML(cat, item, icon, sub) {
@@ -537,11 +543,17 @@ const Library = (() => {
   function openItem(cat, id) {
     _editCat=cat; _editId=id||null;
     const lib=DB.getLib();
-    const item=id?lib[cat].find(x=>x.id===id):null;
+    const item=id?(lib[cat]||[]).find(x=>x.id===id):null;
     document.getElementById('lib-modal-title').textContent = item ? 'Editar item' : _catLabel(cat);
     // reset all fields
     ['lib-item-name','lib-item-notes','lib-item-recipe','lib-item-brand',
-     'lib-item-dose-min','lib-item-dose-max'].forEach(i=>{ const el=document.getElementById(i); if(el) el.value=''; });
+     'lib-item-dose-min','lib-item-dose-max',
+     'lib-setup-led-model','lib-setup-led-type','lib-setup-led-watts',
+     'lib-setup-photo-on','lib-setup-photo-off','lib-setup-tent-size',
+     'lib-setup-exhaust','lib-setup-fan','lib-setup-timer',
+     'lib-setup-co2','lib-setup-vpd-sensor','lib-setup-light-sensor',
+     'lib-setup-camera','lib-setup-irrigation','lib-setup-smart-plug',
+    ].forEach(i=>{ const el=document.getElementById(i); if(el) el.value=''; });
     UI.setPill('lib-soil-type','inerte');
     UI.setPill('lib-nut-type','mineral');
     _updateLibFields(cat);
@@ -552,36 +564,74 @@ const Library = (() => {
       sv('lib-item-dose-min',item.doseMin); sv('lib-item-dose-max',item.doseMax);
       if(item.type&&cat==='substrates') UI.setPill('lib-soil-type',item.type);
       if(item.type&&cat==='nutrients')  UI.setPill('lib-nut-type',item.type);
+      if(cat==='setups') {
+        sv('lib-setup-led-model',   item.ledModel);
+        sv('lib-setup-led-type',    item.ledType);
+        sv('lib-setup-led-watts',   item.ledWatts);
+        sv('lib-setup-photo-on',    item.photoOn);
+        sv('lib-setup-photo-off',   item.photoOff);
+        sv('lib-setup-tent-size',   item.tentSize);
+        sv('lib-setup-exhaust',     item.exhaust);
+        sv('lib-setup-fan',         item.fan);
+        sv('lib-setup-timer',       item.timer);
+        sv('lib-setup-co2',         item.co2);
+        sv('lib-setup-vpd-sensor',  item.vpdSensor);
+        sv('lib-setup-light-sensor',item.lightSensor);
+        sv('lib-setup-camera',      item.camera);
+        sv('lib-setup-irrigation',  item.irrigationAuto);
+        sv('lib-setup-smart-plug',  item.smartPlug);
+      }
     }
     document.getElementById('lib-del-btn').style.display=id?'':'none';
     Modals.open('modal-lib-item');
   }
 
   function _updateLibFields(cat) {
-    ['lib-fields-substrate','lib-fields-recipe','lib-fields-nutrient']
+    ['lib-fields-substrate','lib-fields-recipe','lib-fields-nutrient','lib-fields-setup']
       .forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
-    const map={ substrates:'lib-fields-substrate', recipes:'lib-fields-recipe', nutrients:'lib-fields-nutrient' };
+    const map={ substrates:'lib-fields-substrate', recipes:'lib-fields-recipe', nutrients:'lib-fields-nutrient', setups:'lib-fields-setup' };
     const el=document.getElementById(map[cat]); if(el) el.classList.remove('hidden');
   }
 
   function _catLabel(cat) {
-    return { substrates:'Novo substrato', recipes:'Nova receita de solo', nutrients:'Novo nutriente' }[cat]||'Novo item';
+    return { substrates:'Novo substrato', recipes:'Nova receita de solo', nutrients:'Novo nutriente', setups:'Novo setup' }[cat]||'Novo item';
   }
 
   function saveItem() {
     const name=document.getElementById('lib-item-name').value.trim();
     if (!name) { UI.toast('Informe o nome.'); return; }
     const sv=id=>{ const el=document.getElementById(id); return el?el.value.trim()||null:null; };
-    const item = {
-      id:    _editId || Utils.uid(),
-      name,
-      type:  _editCat==='substrates'?UI.getPill('lib-soil-type'):_editCat==='nutrients'?UI.getPill('lib-nut-type'):null,
-      notes:    sv('lib-item-notes'),
-      recipe:   sv('lib-item-recipe'),
-      brand:    sv('lib-item-brand'),
-      doseMin:  parseFloat(document.getElementById('lib-item-dose-min')?.value)||null,
-      doseMax:  parseFloat(document.getElementById('lib-item-dose-max')?.value)||null,
-    };
+    const nv=id=>{ const el=document.getElementById(id); return el?parseFloat(el.value)||null:null; };
+
+    let item = { id: _editId || Utils.uid(), name };
+
+    if (_editCat === 'substrates') {
+      item = { ...item, type:UI.getPill('lib-soil-type'), brand:sv('lib-item-brand'), notes:sv('lib-item-notes') };
+    } else if (_editCat === 'recipes') {
+      item = { ...item, recipe:sv('lib-item-recipe'), notes:sv('lib-item-notes') };
+    } else if (_editCat === 'nutrients') {
+      item = { ...item, type:UI.getPill('lib-nut-type'), doseMin:nv('lib-item-dose-min'), doseMax:nv('lib-item-dose-max'), notes:sv('lib-item-notes') };
+    } else if (_editCat === 'setups') {
+      item = { ...item,
+        ledModel:  sv('lib-setup-led-model'),
+        ledType:   sv('lib-setup-led-type'),
+        ledWatts:  sv('lib-setup-led-watts'),
+        photoOn:   sv('lib-setup-photo-on'),
+        photoOff:  sv('lib-setup-photo-off'),
+        tentSize:  sv('lib-setup-tent-size'),
+        exhaust:   sv('lib-setup-exhaust'),
+        fan:       sv('lib-setup-fan'),
+        timer:     sv('lib-setup-timer'),
+        co2:       sv('lib-setup-co2'),
+        vpdSensor: sv('lib-setup-vpd-sensor'),
+        lightSensor:sv('lib-setup-light-sensor'),
+        camera:    sv('lib-setup-camera'),
+        irrigationAuto:sv('lib-setup-irrigation'),
+        smartPlug: sv('lib-setup-smart-plug'),
+        notes:     sv('lib-item-notes'),
+      };
+    }
+
     DB.upsertLibItem(_editCat, item);
     Modals.close('modal-lib-item');
     renderScreen();
@@ -1070,8 +1120,30 @@ const Modals = (() => {
     });
     // Parent
     _renderParentSelect(plant?.parentId||'');
+    // Setup — popular select da biblioteca
+    _renderSetupSelect(plant?.setupId||'');
+    // Solo — popular select da biblioteca
+    _renderSoilSelect(plant?.soilId||'');
     open('modal-plant');
     setTimeout(()=>document.getElementById('mp-name').focus(),150);
+  }
+
+  function _renderSetupSelect(currentId) {
+    const sel = document.getElementById('mp-setup-select');
+    if (!sel) return;
+    const lib = DB.getLib();
+    sel.innerHTML = `<option value="">— sem setup —</option>` +
+      (lib.setups||[]).map(s=>`<option value="${s.id}" ${s.id===currentId?'selected':''}>${Utils.esc(s.name)}</option>`).join('');
+  }
+
+  function _renderSoilSelect(currentId) {
+    const sel = document.getElementById('mp-soil-select');
+    if (!sel) return;
+    const lib = DB.getLib();
+    const subs = lib.substrates.map(s=>`<option value="sub_${s.id}">${Utils.esc(s.name)}</option>`).join('');
+    const recs = lib.recipes.map(r=>`<option value="rec_${r.id}">${Utils.esc(r.name)}</option>`).join('');
+    sel.innerHTML = `<option value="">— sem solo —</option>${subs}${recs}`;
+    if (currentId) sel.value = currentId;
   }
 
   function _renderParentSelect(currentParentId) {
@@ -1101,14 +1173,7 @@ const Modals = (() => {
     if (!name) { UI.toast('Informe o nome da planta.'); return; }
     const g = id => document.getElementById(id);
     const gv= id => g(id)?.value.trim()||null;
-    const soil = { type:UI.getPill('soil-type-group')||'inerte', recipe:gv('soil-recipe'), brand:gv('soil-brand'), notes:gv('soil-notes') };
-    const setup = {};
-    ['tent-size','led-model','led-type','led-watts','photo-on','photo-off','exhaust','fan','timer',
-     'co2','vpd-sensor','light-sensor','camera','irrigation-auto','smart-plug','notes'].forEach(k=>{
-      const key=k.replace(/-([a-z])/g,(_,c)=>c.toUpperCase());
-      const val=gv('setup-'+k);
-      if(val) setup[key]=val;
-    });
+
     const base = {
       name, type:UI.getPill('mp-type-group')||'auto',
       startDate:g('mp-date').value||Utils.today(),
@@ -1118,7 +1183,8 @@ const Modals = (() => {
       cycleWith:parseInt(g('mp-cycle-with').value)||2,
       cycleWithout:parseInt(g('mp-cycle-without').value)||1,
       parentId: g('mp-parent')?.value||null,
-      soil, setup,
+      setupId:  g('mp-setup-select')?.value||null,
+      soilId:   g('mp-soil-select')?.value||null,
     };
     if (_editPlantId) {
       const p=DB.getPlant(_editPlantId);
