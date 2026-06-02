@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#0D010A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="GrowLog"/>
+<link rel="manifest" href="manifest.json"/>
+<title>GrowLog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Familjen+Grotesk:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="ob">
+  <div class="ob-top">
+    <div class="ob-logo"><span class="ob-logo-m">✦</span><span class="ob-logo-t">GrowLog</span></div>
+    <button class="ob-skip" onclick="OB.skip()">Pular tudo</button>
+  </div>
+  <div class="ob-dots" id="ob-dots">
+    <div class="ob-dot cur"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+  </div>
+  <div class="ob-body">
+    <div class="ob-step on" id="obs-0">
+      <div class="ob-icon">🌸</div>
+      <div class="ob-title">Bem-vindo ao GrowLog</div>
+      <div class="ob-sub">Seu diário de cultivo indoor. Vamos configurar a biblioteca antes de começar — leva só alguns minutos e torna o app muito mais útil.</div>
+    </div>
+    <div class="ob-step" id="obs-1">
+      <div class="ob-icon">💡</div>
+      <div class="ob-title">Setup de cultivo</div>
+      <div class="ob-sub">Cadastre sua tenda, LED, fotoperíodo e sensores. O setup fica salvo e você vincula a cada cultivo.</div>
+      <div class="ob-acts">
+        <button class="btn bpk" onclick="Library.openItem('setups')">＋ Cadastrar setup agora</button>
+        <p class="fhint" style="text-align:center;margin-top:4px">Ou avance e faça depois na Biblioteca.</p>
+      </div>
+    </div>
+    <div class="ob-step" id="obs-2">
+      <div class="ob-icon">🪨</div>
+      <div class="ob-title">Solo e nutrientes</div>
+      <div class="ob-sub">Cadastre substratos, receitas de solo e nutrientes com dosagem. Os nutrientes aparecem como autocomplete nos registros de rega.</div>
+      <div class="ob-acts">
+        <button class="btn bpk" onclick="Library.openItem('substrates')">＋ Novo substrato</button>
+        <button class="btn bgh" onclick="Library.openItem('recipes')">＋ Nova receita de solo</button>
+        <button class="btn bgh" onclick="Library.openItem('nutrients')">＋ Novo nutriente</button>
+      </div>
+    </div>
+    <div class="ob-step" id="obs-3">
+      <div class="ob-icon">🪴</div>
+      <div class="ob-title">Vasos</div>
+      <div class="ob-sub">Cadastre os vasos que você usa com tipo e volume. Útil para acompanhar transplantes.</div>
+      <div class="ob-acts">
+        <button class="btn bpk" onclick="Library.openItem('pots')">＋ Cadastrar vaso</button>
+        <p class="fhint" style="text-align:center;margin-top:4px">Opcional — pode fazer depois.</p>
+      </div>
+    </div>
+    <div class="ob-step" id="obs-4">
+      <div class="ob-icon">🧬</div>
+      <div class="ob-title">Genética e linhagem</div>
+      <div class="ob-sub">Cadastre suas strains com geração, pais e banco de sementes. O app gera o gráfico de linhagem automaticamente.</div>
+      <div class="ob-acts">
+        <button class="btn bpk" onclick="Library.openItem('lineageNodes')">＋ Cadastrar strain</button>
+        <p class="fhint" style="text-align:center;margin-top:4px">Opcional — pode fazer depois.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ob-foot" id="ob-foot">
+    <button class="btn bpk" onclick="OB.next()">Vamos lá →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header id="hdr">
+    <div class="hl">
+      <button class="hbtn hidden" id="back-btn" onclick="App.goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="logo" id="hdr-logo"><span class="logo-m">✦</span><span class="logo-t">GrowLog</span></div>
+      <span class="hidden" id="hdr-title"></span>
+    </div>
+    <div class="hr2" id="hdr-acts">
+      <button class="hbtn" onclick="Modals.openIE()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HOME -->
+    <section class="scr on" id="scr-home">
+      <div id="home-hero"></div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-n" id="kn-plants">0</div><div class="kpi-l">Plantas</div></div>
+        <div class="kpi"><div class="kpi-n" id="kn-logs">0</div><div class="kpi-l">Registros</div></div>
+        <div class="kpi"><div class="kpi-n" id="kn-days">—</div><div class="kpi-l">Dias máx</div></div>
+      </div>
+      <div class="alerts hidden" id="alerts"></div>
+      <div class="slbl">Plantas</div>
+      <div class="plant-list" id="plant-list"></div>
+      <button class="fab" onclick="Modals.openPlant()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </section>
+
+    <!-- DETAIL -->
+    <section class="scr" id="scr-detail">
+      <div class="phero">
+        <div class="phs-row">
+          <div class="phs-dot" id="ph-dot"></div>
+          <span class="phs-lbl" id="ph-stage">—</span>
+          <button class="edit-btn" onclick="Modals.openStage()">editar</button>
+        </div>
+        <div class="phnums">
+          <div class="phnum-b"><div class="phnum pk" id="ph-days">—</div><div class="phnum-l">dias</div></div>
+          <div class="phdiv"></div>
+          <div class="phnum-b"><div class="phnum" id="ph-weeks">—</div><div class="phnum-l">semana</div></div>
+        </div>
+      </div>
+      <div class="dal hidden" id="det-alert"></div>
+      <div class="scards">
+        <div class="wcard hidden" id="wcard"></div>
+        <div class="cdown hidden" id="cdown">
+          <div class="cdt"><span class="cde">colheita estimada</span><span class="cdd" id="cd-date">—</span></div>
+          <div class="cdb"><span class="cdn" id="cd-days">—</span><span class="cdu" id="cd-unit">dias</span></div>
+          <div class="cdbw"><div class="cdbr" id="cd-bar"></div></div>
+        </div>
+        <div class="vpdcard hidden" id="vpd-card">
+          <div><span class="vpe">VPD último registro</span>
+            <div style="display:flex;align-items:baseline;gap:6px"><span class="vpv" id="vpd-val">—</span><span class="vpu">kPa</span></div>
+          </div>
+          <span class="vpz" id="vpd-zone"></span>
+        </div>
+      </div>
+      <div class="pact"><button class="pbtn" onclick="Modals.openEntry()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Registrar</button>
+      </div>
+      <div class="sacts">
+        <button class="sbtn" onclick="Modals.openEntry('rega')"><span class="si">💧</span>Rega</button>
+        <button class="sbtn" onclick="Modals.openEntry('clima')"><span class="si">🌡️</span>Clima</button>
+        <button class="sbtn" onclick="App.exportPlantCSV()"><span class="si">📊</span>CSV</button>
+      </div>
+      <div class="dtabs">
+        <button class="dtab on" data-t="timeline" onclick="DT.sw('timeline')">Timeline</button>
+        <button class="dtab" data-t="list" onclick="DT.sw('list')">Registros</button>
+        <button class="dtab" data-t="gene" onclick="DT.sw('gene')">Genealogia</button>
+      </div>
+      <div class="dcon on" id="dcon-timeline"><div class="tlw" id="tl-wrap"></div></div>
+      <div class="dcon" id="dcon-list"><div class="ew" id="entries-wrap"></div></div>
+      <div class="dcon" id="dcon-gene"></div>
+    </section>
+
+    <!-- STATS -->
+    <section class="scr" id="scr-stats">
+      <div id="stats-body"><div class="eh" style="padding:40px">Adicione plantas para ver analytics.</div></div>
+    </section>
+
+    <!-- LIBRARY -->
+    <section class="scr" id="scr-library">
+      <div class="libtabs">
+        <button class="libtab on" data-lt="substrates" onclick="Library.sw('substrates')">🪨 Solo</button>
+        <button class="libtab" data-lt="recipes" onclick="Library.sw('recipes')">📋 Receitas</button>
+        <button class="libtab" data-lt="nutrients" onclick="Library.sw('nutrients')">🧪 Nutri.</button>
+        <button class="libtab" data-lt="setups" onclick="Library.sw('setups')">💡 Setup</button>
+        <button class="libtab" data-lt="pots" onclick="Library.sw('pots')">🪴 Vasos</button>
+        <button class="libtab" data-lt="lineageNodes" onclick="Library.sw('lineageNodes')">🧬 Genética</button>
+      </div>
+      <div class="libcon on" id="lib-substrates"><button class="ladd" onclick="Library.openItem('substrates')">＋ Novo substrato</button><div id="lib-substrates-list"></div></div>
+      <div class="libcon" id="lib-recipes"><button class="ladd" onclick="Library.openItem('recipes')">＋ Nova receita</button><div id="lib-recipes-list"></div></div>
+      <div class="libcon" id="lib-nutrients"><button class="ladd" onclick="Library.openItem('nutrients')">＋ Novo nutriente</button><div id="lib-nutrients-list"></div></div>
+      <div class="libcon" id="lib-setups"><button class="ladd" onclick="Library.openItem('setups')">＋ Novo setup</button><div id="lib-setups-list"></div></div>
+      <div class="libcon" id="lib-pots"><button class="ladd" onclick="Library.openItem('pots')">＋ Novo vaso</button><div id="lib-pots-list"></div></div>
+      <div class="libcon" id="lib-lineageNodes"><button class="ladd" onclick="Library.openItem('lineageNodes')">＋ Nova strain</button><div id="lib-lineage-list"></div></div>
+    </section>
+  </main>
+
+  <nav class="bnav">
+    <button class="bni on" data-s="home" onclick="App.go('home')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Início</span>
+    </button>
+    <button class="bni" data-s="detail" id="bnav-detail" onclick="App.go('detail')" style="display:none">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Planta</span>
+    </button>
+    <button class="bni" data-s="library" onclick="App.go('library')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Biblioteca</span>
+    </button>
+    <button class="bni" data-s="stats" onclick="App.go('stats')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Analytics</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODAIS -->
+<div class="ov" id="modal-plant">
+  <div class="sht tall">
+    <div class="drag"></div>
+    <h2 class="stitle" id="mp-title">Nova Planta</h2>
+    <div class="ptabs">
+      <button class="ptab on" data-pt="basico" onclick="PT.sw('basico')">🌱 Básico</button>
+      <button class="ptab" data-pt="solo" onclick="PT.sw('solo')">🪨 Solo</button>
+      <button class="ptab" data-pt="setup" onclick="PT.sw('setup')">💡 Setup</button>
+      <button class="ptab" data-pt="origem" onclick="PT.sw('origem')">🧬 Origem</button>
+    </div>
+    <div class="ptcon on" id="ptc-basico">
+      <div class="fg"><label class="fl">Nome / Strain</label><input class="fi" id="mp-name" type="text" placeholder="Ex: Lemon Drizzle #2"/></div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Tipo</label>
+          <div class="pills" id="mp-type"><button class="pill on" data-v="auto">🔄 Auto</button><button class="pill" data-v="foto">📸 Foto</button></div>
+        </div>
+        <div class="fg"><label class="fl">Início</label><input class="fi" id="mp-date" type="date"/></div>
+      </div>
+      <div class="fg"><label class="fl">Ciclo de rega</label>
+        <p class="fhint" style="margin-bottom:8px">Regas com nutriente + sem nutriente</p>
+        <div class="cycrow">
+          <div class="cycgrp"><input class="fi cycn" id="mp-cycw" type="number" min="1" max="10" value="2"/><span class="cycl">💧🧪 com</span></div>
+          <span class="cycs">+</span>
+          <div class="cycgrp"><input class="fi cycn" id="mp-cyco" type="number" min="1" max="10" value="1"/><span class="cycl">💧 sem</span></div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Semanas Veg.</label><input class="fi" id="mp-veg" type="number" min="1" placeholder="Ex: 4"/></div>
+        <div class="fg"><label class="fl">Semanas Flor.</label><input class="fi" id="mp-flor" type="number" min="1" placeholder="Ex: 8"/></div>
+      </div>
+      <div class="fg"><label class="fl">Observações</label><textarea class="fi" id="mp-obs" rows="2" placeholder="Genética, notas gerais..."></textarea></div>
+    </div>
+    <div class="ptcon" id="ptc-solo">
+      <div class="fg"><label class="fl">Substrato / Receita</label>
+        <p class="fhint" style="margin-bottom:8px">Cadastre em <strong>Biblioteca → 🪨 Solo</strong> e selecione aqui.</p>
+        <select class="fi" id="mp-soil"><option value="">— sem solo —</option></select>
+      </div>
+      <div class="fg"><label class="fl">Vaso</label><select class="fi" id="mp-pot"><option value="">— sem vaso —</option></select></div>
+    </div>
+    <div class="ptcon" id="ptc-setup">
+      <div class="fg"><label class="fl">Setup de cultivo</label>
+        <p class="fhint" style="margin-bottom:8px">Cadastre em <strong>Biblioteca → 💡 Setup</strong> e selecione aqui.</p>
+        <select class="fi" id="mp-setup"><option value="">— sem setup —</option></select>
+      </div>
+    </div>
+    <div class="ptcon" id="ptc-origem">
+      <div class="fg"><label class="fl">Planta mãe (clone)</label>
+        <p class="fhint" style="margin-bottom:8px">Se é clone de outra planta cadastrada, selecione aqui.</p>
+        <select class="fi" id="mp-parent"><option value="">— sem mãe —</option></select>
+      </div>
+      <div class="fg"><label class="fl">Strain / Genética</label>
+        <p class="fhint" style="margin-bottom:8px">Vincule uma strain da biblioteca para o gráfico de linhagem.</p>
+        <select class="fi" id="mp-lineage"><option value="">— sem strain —</option></select>
+      </div>
+    </div>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="M.close('modal-plant')">Cancelar</button>
+      <button class="btn bpk" onclick="Modals.savePlant()">Salvar planta</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-stage">
+  <div class="sht">
+    <div class="drag"></div>
+    <h2 class="stitle">Estágio</h2>
+    <div class="fg"><label class="fl">Estágio atual</label>
+      <div class="pills wrap" id="stage-pills">
+        <button class="pill" data-v="germinacao">🌰 Germinação</button>
+        <button class="pill" data-v="plantula">🌱 Plântula</button>
+        <button class="pill on" data-v="vegetativo">🍃 Vegetativo</button>
+        <button class="pill" data-v="floracao">🌸 Floração</button>
+        <button class="pill" data-v="colheita">✂️ Colheita</button>
+      </div>
+    </div>
+    <p class="fhint" style="margin-bottom:12px">Dias e semana são automáticos. Preencha só para sobrescrever.</p>
+    <div class="frow">
+      <div class="fg"><label class="fl">Dias (override)</label><input class="fi" id="ms-days" type="number" min="0" placeholder="Automático"/></div>
+      <div class="fg"><label class="fl">Semana (override)</label><input class="fi" id="ms-weeks" type="number" min="1" placeholder="Automático"/></div>
+    </div>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="M.close('modal-stage')">Cancelar</button>
+      <button class="btn bpk" onclick="Modals.saveStage()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-entry">
+  <div class="sht tall">
+    <div class="drag"></div>
+    <h2 class="stitle" id="me-title">Novo Registro</h2>
+    <div class="atg" id="atg">
+      <button class="atbtn on" data-v="geral" onclick="AT.sel(this)"><span class="ai">📋</span>Geral</button>
+      <button class="atbtn" data-v="rega" onclick="AT.sel(this)"><span class="ai">💧</span>Rega</button>
+      <button class="atbtn" data-v="clima" onclick="AT.sel(this)"><span class="ai">🌡️</span>Clima</button>
+      <button class="atbtn" data-v="luz" onclick="AT.sel(this)"><span class="ai">💡</span>Luz</button>
+      <button class="atbtn" data-v="poda" onclick="AT.sel(this)"><span class="ai">✂️</span>Poda</button>
+      <button class="atbtn" data-v="lst" onclick="AT.sel(this)"><span class="ai">🪢</span>LST</button>
+      <button class="atbtn" data-v="defoliacao" onclick="AT.sel(this)"><span class="ai">🍃</span>Defol.</button>
+      <button class="atbtn" data-v="transplante" onclick="AT.sel(this)"><span class="ai">🪴</span>Transp.</button>
+      <button class="atbtn" data-v="flush" onclick="AT.sel(this)"><span class="ai">🚿</span>Flush</button>
+      <button class="atbtn" data-v="runoff" onclick="AT.sel(this)"><span class="ai">🧪</span>Runoff</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Data</label><input class="fi" id="ef-date" type="date" onchange="EF.autoP()"/></div>
+      <div class="fg"><label class="fl">Hora</label><input class="fi" id="ef-time" type="time"/></div>
+    </div>
+    <div class="ap"><span class="apb" id="ef-days">—</span><span class="apb on" id="ef-weeks">—</span></div>
+    <div class="fg"><label class="fl">Estágio</label>
+      <div class="pills" id="ef-stage">
+        <button class="pill" data-v="germinacao">🌰</button>
+        <button class="pill" data-v="plantula">🌱</button>
+        <button class="pill on" data-v="vegetativo">🍃 Veg</button>
+        <button class="pill" data-v="floracao">🌸</button>
+        <button class="pill" data-v="colheita">✂️</button>
+      </div>
+    </div>
+    <div class="fsec" id="ef-amb">
+      <div class="fsect">🌡️ Ambiente</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Temperatura °C</label><input class="fi" id="ef-temp" type="number" step=".1" placeholder="25.5" oninput="VPD.recalc()"/></div>
+        <div class="fg"><label class="fl">Umidade %</label><input class="fi" id="ef-ur" type="number" placeholder="60" oninput="VPD.recalc()"/></div>
+      </div>
+      <div class="crow"><span class="cl">VPD</span><span class="cv dim" id="ef-vpd">—</span><span class="cv dim" id="ef-vpd-zone">—</span></div>
+    </div>
+    <div class="fsec hidden" id="ef-luz">
+      <div class="fsect">💡 Luz</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Lux</label><input class="fi" id="ef-lux" type="number" placeholder="30000" oninput="Light.recalc()"/></div>
+        <div class="fg"><label class="fl">Dimmer %</label><input class="fi" id="ef-dimmer" type="number" placeholder="80"/></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">LED liga</label><input class="fi" id="ef-ledon" type="time" oninput="Light.recalc()"/></div>
+        <div class="fg"><label class="fl">LED apaga</label><input class="fi" id="ef-ledoff" type="time" oninput="Light.recalc()"/></div>
+      </div>
+      <div class="fg"><label class="fl">Distância cm</label><input class="fi" id="ef-dist" type="number" placeholder="30"/></div>
+      <div class="crow"><span class="cl">PPFD</span><span class="cv dim" id="ef-ppfd">—</span></div>
+      <div class="crow"><span class="cl">DLI</span><span class="cv dim" id="ef-dli">—</span></div>
+      <div class="lfb hidden" id="ef-lfb"></div>
+    </div>
+    <div class="fsec hidden" id="ef-rega">
+      <div class="fsect">💧 Rega</div>
+      <div class="tglrow"><span class="tgll">Registrar rega</span><button class="tglbtn" id="tgl-water" onclick="UI.tgl('tgl-water','ws')"><span class="tglthm"></span></button></div>
+      <div class="tglsec" id="ws">
+        <div class="frow">
+          <div class="fg"><label class="fl">Volume ml</label><input class="fi" id="ef-water" type="number" placeholder="500"/></div>
+          <div class="fg"><label class="fl">pH</label><input class="fi" id="ef-ph" type="number" step=".1" placeholder="6.0"/></div>
+        </div>
+        <div class="fg"><label class="fl">EC</label><input class="fi" id="ef-ec" type="number" step=".1" placeholder="1.4"/></div>
+        <div class="tglrow" style="margin-top:8px"><span class="tgll">Nutrientes</span><button class="tglbtn" id="tgl-nut" onclick="UI.tgl('tgl-nut','ns')"><span class="tglthm"></span></button></div>
+        <div class="tglsec" id="ns">
+          <div class="frow">
+            <div class="fg acw"><label class="fl">Nutriente</label><input class="fi" id="nut-name" type="text" placeholder="Busca na biblioteca" autocomplete="off"/><div class="acl hidden" id="nut-ac"></div></div>
+            <div class="fg"><label class="fl">ml/L</label><input class="fi" id="nut-qty" type="number" step=".1" placeholder="2"/></div>
+          </div>
+          <button class="btn bgh bsm" onclick="EF.addNut()">＋ Adicionar</button>
+          <div class="nuttags" id="nut-tags"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fsec hidden" id="ef-poda">
+      <div class="fsect">✂️ Poda / Defoliação</div>
+      <div class="fg"><label class="fl">Técnica</label>
+        <div class="pills wrap" id="ef-poda-tipo">
+          <button class="pill on" data-v="topping">Topping</button>
+          <button class="pill" data-v="fimming">Fimming</button>
+          <button class="pill" data-v="defoliacao">Defoliação</button>
+          <button class="pill" data-v="lollipopping">Lollipopping</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Nós removidos</label><input class="fi" id="ef-poda-nos" type="number" placeholder="2"/></div>
+    </div>
+    <div class="fsec hidden" id="ef-lst">
+      <div class="fsect">🪢 LST</div>
+      <div class="fg"><label class="fl">Técnica</label>
+        <div class="pills wrap" id="ef-lst-tipo">
+          <button class="pill on" data-v="lst">LST</button>
+          <button class="pill" data-v="scrog">SCROG</button>
+          <button class="pill" data-v="supercrop">Supercrop</button>
+          <button class="pill" data-v="mainlining">Mainlining</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Descrição</label><input class="fi" id="ef-lst-desc" type="text" placeholder="Dobrei o topo principal"/></div>
+    </div>
+    <div class="fsec hidden" id="ef-transp">
+      <div class="fsect">🪴 Transplante</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">De (L)</label><input class="fi" id="ef-tp-from" type="number" step=".5" placeholder="1"/></div>
+        <div class="fg"><label class="fl">Para (L)</label><input class="fi" id="ef-tp-to" type="number" step=".5" placeholder="5"/></div>
+      </div>
+      <div class="fg"><label class="fl">Substrato novo</label><input class="fi" id="ef-tp-sub" type="text" placeholder="Coco + perlita"/></div>
+    </div>
+    <div class="fsec hidden" id="ef-flush">
+      <div class="fsect">🚿 Flush</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Volume L</label><input class="fi" id="ef-flush-vol" type="number" step=".5" placeholder="5"/></div>
+        <div class="fg"><label class="fl">pH</label><input class="fi" id="ef-flush-ph" type="number" step=".1" placeholder="6.0"/></div>
+      </div>
+    </div>
+    <div class="fsec hidden" id="ef-runoff">
+      <div class="fsect">🧪 Runoff</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">pH Runoff</label><input class="fi" id="ef-ro-ph" type="number" step=".1" placeholder="6.1"/></div>
+        <div class="fg"><label class="fl">EC Runoff</label><input class="fi" id="ef-ro-ec" type="number" step=".1" placeholder="1.8"/></div>
+      </div>
+    </div>
+    <div class="fg" style="margin-top:16px"><label class="fl">Observações</label><textarea class="fi" id="ef-obs" rows="3" placeholder="Notas livres..."></textarea></div>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="M.close('modal-entry')">Cancelar</button>
+      <button class="btn bpk" onclick="Modals.saveEntry()">Salvar registro</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-edet">
+  <div class="sht">
+    <div class="drag"></div>
+    <h2 class="stitle">Registro</h2>
+    <div id="edet-body"></div>
+    <div class="sacts2">
+      <button class="btn brd bsm" id="edet-del">🗑 Excluir</button>
+      <button class="btn bgh bsm" id="edet-edit">✏️ Editar</button>
+      <button class="btn bpk" onclick="M.close('modal-edet')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-confirm">
+  <div class="sht">
+    <div class="drag"></div>
+    <h2 class="stitle" id="conf-title">Confirmar</h2>
+    <p class="confmsg" id="conf-msg"></p>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="UI.resolveConfirm(false)">Cancelar</button>
+      <button class="btn bpk" onclick="UI.resolveConfirm(true)">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-ie">
+  <div class="sht">
+    <div class="drag"></div>
+    <h2 class="stitle">Dados</h2>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="iebtn" onclick="App.exportBackup()"><span class="iei">💾</span><div><div class="iel">Backup JSON</div><span class="ies">Exportar todos os dados</span></div></button>
+      <label class="iebtn"><span class="iei">📥</span><div><div class="iel">Importar Backup</div><span class="ies">Restaurar de JSON</span></div><input type="file" accept=".json" style="display:none" onchange="App.importBackup(event)"/></label>
+      <button class="iebtn" onclick="App.exportAllCSV()"><span class="iei">📊</span><div><div class="iel">Exportar CSV</div><span class="ies">Todas as plantas</span></div></button>
+    </div>
+    <p class="fhint" style="margin-top:12px">⚠️ Faça backup regularmente. Dados no IndexedDB podem ser perdidos se o cache for limpo.</p>
+    <div class="sacts2"><button class="btn bpk" onclick="M.close('modal-ie')">Fechar</button></div>
+  </div>
+</div>
+
+<div class="ov" id="modal-lib">
+  <div class="sht tall">
+    <div class="drag"></div>
+    <h2 class="stitle" id="lib-title">Novo item</h2>
+    <div class="fg" id="lib-nome-fg"><label class="fl" id="lib-nome-lbl">Nome</label><input class="fi" id="lib-nome" type="text" placeholder="Ex: Coco Amafibra 98" autocomplete="off"/></div>
+    <div id="lf-sub">
+      <div class="fg"><label class="fl">Tipo</label>
+        <div class="pills wrap" id="lib-soil-type">
+          <button class="pill on" data-v="inerte">🪨 Inerte</button>
+          <button class="pill" data-v="organico">🌿 Orgânico</button>
+          <button class="pill" data-v="organomineral">⚗️ Organo.</button>
+          <button class="pill" data-v="coco">🌴 Coco</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Marca</label><input class="fi" id="lib-sub-brand" type="text" placeholder="Ex: Amafibra, Canna"/></div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="lib-sub-notes" rows="3" placeholder="pH de lavagem, proporções..."></textarea></div>
+    </div>
+    <div id="lf-rec" class="hidden">
+      <div class="fg"><label class="fl">Receita</label><textarea class="fi" id="lib-rec-recipe" rows="6" placeholder="Ex:&#10;40% terra preta&#10;20% húmus&#10;20% perlita&#10;10% bokashi&#10;10% coco coir"></textarea></div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="lib-rec-notes" rows="2" placeholder="Correção pH, maturação..."></textarea></div>
+    </div>
+    <div id="lf-nut" class="hidden">
+      <div class="fg"><label class="fl">Tipo</label>
+        <div class="pills wrap" id="lib-nut-type">
+          <button class="pill on" data-v="mineral">⚗️ Mineral</button>
+          <button class="pill" data-v="organico">🌿 Orgânico</button>
+          <button class="pill" data-v="adubo">🌱 Adubo</button>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Dose mín. ml/L</label><input class="fi" id="lib-nut-dmin" type="number" step=".1" placeholder="0.5"/></div>
+        <div class="fg"><label class="fl">Dose máx. ml/L</label><input class="fi" id="lib-nut-dmax" type="number" step=".1" placeholder="2.0"/></div>
+      </div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="lib-nut-notes" rows="2" placeholder="NPK, fabricante..."></textarea></div>
+    </div>
+    <div id="lf-setup" class="hidden">
+      <div class="sg2"><div class="sg2t">💡 Iluminação</div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Modelo LED</label><input class="fi" id="lib-s-led-model" type="text" placeholder="Ex: QB240"/></div>
+          <div class="fg"><label class="fl">Chip</label><input class="fi" id="lib-s-led-chip" type="text" placeholder="Ex: LM301H"/></div>
+        </div>
+        <div class="fg"><label class="fl">Potência W</label><input class="fi" id="lib-s-led-watts" type="number" placeholder="120"/></div>
+      </div>
+      <div class="sg2"><div class="sg2t">📅 Fotoperíodo</div>
+        <div class="frow">
+          <div class="fg"><label class="fl">LED liga</label><input class="fi" id="lib-s-photo-on" type="time"/></div>
+          <div class="fg"><label class="fl">LED apaga</label><input class="fi" id="lib-s-photo-off" type="time"/></div>
+        </div>
+      </div>
+      <div class="sg2"><div class="sg2t">📐 Estrutura e Clima</div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Tenda</label><input class="fi" id="lib-s-tent" type="text" placeholder="60×60×140 cm"/></div>
+          <div class="fg"><label class="fl">Exaustor</label><input class="fi" id="lib-s-exhaust" type="text" placeholder='4" 190m³/h'/></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Ventilador</label><input class="fi" id="lib-s-fan" type="text" placeholder="clip fan 15cm"/></div>
+          <div class="fg"><label class="fl">Timer</label><input class="fi" id="lib-s-timer" type="text" placeholder="Sonoff 18/6"/></div>
+        </div>
+      </div>
+      <div class="sg2"><div class="sg2t">🤖 Automações e Sensores</div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Tomada inteligente</label><input class="fi" id="lib-s-smartplug" type="text" placeholder="Tasmota, Shelly"/></div>
+          <div class="fg"><label class="fl">Irrigação auto</label><input class="fi" id="lib-s-irrigation" type="text" placeholder="timer gotejador"/></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Sensor CO₂</label><input class="fi" id="lib-s-co2" type="text" placeholder="SCD30"/></div>
+          <div class="fg"><label class="fl">Sensor VPD</label><input class="fi" id="lib-s-vpd" type="text" placeholder="SHT31, AHT20"/></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label class="fl">Sensor de luz</label><input class="fi" id="lib-s-light" type="text" placeholder="BH1750"/></div>
+          <div class="fg"><label class="fl">Câmera</label><input class="fi" id="lib-s-camera" type="text" placeholder="Reolink"/></div>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="lib-s-notes" rows="2" placeholder="Filtro de carvão, controlador..."></textarea></div>
+    </div>
+    <div id="lf-pot" class="hidden">
+      <div class="fg"><label class="fl">Tipo</label>
+        <div class="pills wrap" id="lib-pot-type">
+          <button class="pill on" data-v="plastico">🪣 Plástico</button>
+          <button class="pill" data-v="tecido">🧺 Tecido</button>
+          <button class="pill" data-v="airpot">⭕ Airpot</button>
+          <button class="pill" data-v="inteligente">🤖 Intelig.</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Volume (litros)</label><input class="fi" id="lib-pot-vol" type="number" step=".5" placeholder="Ex: 11"/></div>
+    </div>
+    <div id="lf-gene" class="hidden">
+      <div class="fg"><label class="fl">Geração</label>
+        <div class="pills wrap" id="lib-gene-gen">
+          <button class="pill on" data-v="F1">F1</button>
+          <button class="pill" data-v="F2">F2</button>
+          <button class="pill" data-v="IBL">IBL</button>
+          <button class="pill" data-v="BX">BX</button>
+          <button class="pill" data-v="Landrace">Landrace</button>
+          <button class="pill" data-v="Clone">Clone</button>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Pai / Parent 1</label><input class="fi" id="lib-gene-p1" type="text" placeholder="Ex: OG Kush"/></div>
+        <div class="fg"><label class="fl">Mãe / Parent 2</label><input class="fi" id="lib-gene-p2" type="text" placeholder="Ex: Durban Poison"/></div>
+      </div>
+      <div class="fg"><label class="fl">Banco de sementes</label><input class="fi" id="lib-gene-bank" type="text" placeholder="Ex: Royal Queen Seeds"/></div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="lib-gene-notes" rows="2" placeholder="Terpenos, THC estimado..."></textarea></div>
+    </div>
+    <div class="sacts2">
+      <button class="btn brd bsm hidden" id="lib-del-btn" onclick="Library.deleteItem()">🗑</button>
+      <button class="btn bgh" onclick="M.close('modal-lib')">Cancelar</button>
+      <button class="btn bpk" onclick="Library.saveItem()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-lineage">
+  <div class="sht tall">
+    <div class="drag"></div>
+    <h2 class="stitle">🧬 Linhagem — <span id="lin-plant-name"></span></h2>
+    <div id="lin-svg"></div>
+    <div class="slbl" style="padding:8px 0">Strains cadastradas</div>
+    <div class="lnlist" id="lin-list"></div>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="Library.openItem('lineageNodes')">＋ Nova strain</button>
+      <button class="btn bpk" onclick="M.close('modal-lineage')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="modal-harvest">
+  <div class="sht tall">
+    <div class="drag"></div>
+    <h2 class="stitle">🏆 Relatório de Colheita</h2>
+    <p class="sstitle" id="hr-plant-name"></p>
+    <div class="hrs"><div class="hrst">Resumo</div><div id="hr-summary"></div></div>
+    <div class="hrs"><div class="hrst">Médias</div><div id="hr-avgs"></div></div>
+    <div class="hrs"><div class="hrst">Timeline</div><div id="hr-tline"></div></div>
+    <div class="hrs"><div class="hrst">Resultado</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Peso úmido g</label><input class="fi" id="hr-wet" type="number" step=".1" placeholder="120"/></div>
+        <div class="fg"><label class="fl">Peso seco g</label><input class="fi" id="hr-dry" type="number" step=".1" placeholder="28"/></div>
+      </div>
+      <div class="fg"><label class="fl">Avaliação</label>
+        <div class="pills" id="hr-rating">
+          <button class="pill" data-v="1">1⭐</button><button class="pill" data-v="2">2⭐</button>
+          <button class="pill" data-v="3">3⭐</button><button class="pill on" data-v="4">4⭐</button>
+          <button class="pill" data-v="5">5⭐</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Notas finais</label><textarea class="fi" id="hr-notes" rows="3" placeholder="O que aprendeu neste ciclo?"></textarea></div>
+    </div>
+    <div class="sacts2">
+      <button class="btn bgh" onclick="HR.exportCSV()">📤 CSV</button>
+      <button class="btn bpk" onclick="HR.save()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
