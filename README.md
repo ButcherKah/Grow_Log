@@ -1,15 +1,15 @@
-# 🌸 GrowLog v3
+# 🌸 GrowLog v4
 
-Diário de cultivo indoor PWA — registre cada etapa da planta à colheita, do seu celular, sem internet.
+Diário de cultivo indoor — PWA offline-first para registrar cada etapa da planta à colheita, direto do celular.
 
 ---
 
-## Instalação
+## Instalação como app
 
 **iOS Safari**
 1. Abra o link do GitHub Pages no Safari
-2. Toque em compartilhar → "Adicionar à Tela de Início"
-3. O app aparece como ícone na home
+2. Ícone de compartilhar → "Adicionar à Tela de Início"
+3. GrowLog aparece como app na home
 
 **Android Chrome**
 1. Abra o link no Chrome
@@ -17,18 +17,17 @@ Diário de cultivo indoor PWA — registre cada etapa da planta à colheita, do 
 
 ---
 
-## Onboarding
+## Primeira abertura — Onboarding
 
-Na primeira vez que o app é aberto, um fluxo guiado configura sua biblioteca antes de começar:
+Na primeira vez, um fluxo guiado de 5 etapas configura sua biblioteca:
 
 1. **Boas-vindas** — visão geral do app
-2. **Setup** — cadastre tenda, LED, fotoperíodo e sensores
-3. **Solo e nutrientes** — substratos, receitas e nutrientes com dosagem
-4. **Vasos** — tipo e volume dos vasos que você usa
-5. **Genética** — strains e linhagem genética (opcional)
-6. **Pronto** — adicione a primeira planta
+2. **Setup** — tenda, LED, fotoperíodo, sensores
+3. **Solo e nutrientes** — substratos, receitas, nutrientes com dosagem
+4. **Vasos** — tipo e volume
+5. **Genética** — strains e linhagem (opcional)
 
-Depois do onboarding, o fluxo não aparece mais. Todos os itens podem ser editados a qualquer momento na Biblioteca.
+O onboarding não aparece mais depois de concluído. Tudo pode ser editado a qualquer momento em **Biblioteca**.
 
 ---
 
@@ -38,109 +37,76 @@ Quatro abas na barra inferior:
 
 | Aba | Função |
 |---|---|
-| **Início** | Visão geral, lista de plantas, alertas |
-| **Planta** | Detalhe da planta ativa (aparece após abrir uma planta) |
-| **Biblioteca** | Insumos, equipamentos e genética cadastrados |
-| **Analytics** | KPIs, gráficos de barras, médias por planta |
+| **Início** | Painel geral, lista de plantas, alertas |
+| **Planta** | Detalhe da planta ativa |
+| **Biblioteca** | Insumos, equipamentos e genética |
+| **Analytics** | KPIs, gráficos, médias por planta |
 
 ---
 
 ## Biblioteca
 
-Central de insumos e equipamentos. Cadastre uma vez, reutilize em qualquer cultivo.
+Central de insumos e equipamentos — cadastre uma vez, reutilize em todos os cultivos.
 
-### 🪨 Solo
-Substratos individuais — nome, tipo (inerte, orgânico, organomineral, coco), marca e notas.
+**🪨 Solo** — substratos com tipo (inerte, orgânico, organomineral, coco), marca e notas.
 
-### 📋 Receitas
-Receitas de solo — lista de componentes com proporções e notas de preparo.
+**📋 Receitas** — receitas de solo com lista de componentes e proporções.
 
-### 🧪 Nutrientes
-- Nome, tipo (mineral, orgânico, adubo sólido)
-- Dose mínima e máxima em ml/L
-- Aparecem como **autocomplete** no campo de nutrientes da rega
+**🧪 Nutrientes** — nome, tipo, dose mínima e máxima em ml/L. Aparecem como autocomplete nos registros de rega.
 
-### 💡 Setup
-Setup completo do cultivo:
-- LED — modelo, chip, potência
-- Fotoperíodo — horário liga/apaga
-- Estrutura — tamanho da tenda
-- Clima — exaustor, ventilador
-- Automações — timer, tomada inteligente, irrigação automática
-- Sensores — CO₂, VPD/UR/T°, luz, câmera
+**💡 Setup** — configuração completa do ambiente:
+- Iluminação: modelo LED, chip, potência
+- Fotoperíodo: horário liga/apaga
+- Estrutura: tamanho da tenda, exaustor, ventilador, timer
+- Automações: tomada inteligente, irrigação automática
+- Sensores: CO₂, VPD/temp/umidade, luz, câmera
 
-### 🪴 Vasos
-- Tipo: plástico, tecido, airpot ou vaso inteligente
-- Volume em litros
-- Reutilizável em qualquer transplante
+**🪴 Vasos** — tipo (plástico, tecido, airpot, inteligente) e volume em litros.
 
-### 🧬 Genética
-Strains com linhagem completa:
-- Nome da strain / cultivar
-- Geração: F1, F2, IBL, BX, Landrace ou Clone
-- Pai (Parent 1) e Mãe (Parent 2)
-- Banco de sementes
-- Notas (terpenos, THC estimado, características)
-
-Na aba **Genealogia** da planta, toque em **Ver linhagem** para visualizar o gráfico SVG da árvore de cruzamentos. Você pode vincular uma strain cadastrada a qualquer planta.
+**🧬 Genética** — strains com geração (F1, F2, IBL, BX, Landrace, Clone), pai, mãe, banco de sementes e notas.
 
 ---
 
 ## Plantas
 
-Toque no **＋** (botão flutuante) na tela Início. O cadastro tem 4 abas:
+Toque em **＋** na tela Início. O cadastro tem 4 abas:
 
-- **Básico** — nome/strain, tipo (auto/foto), data de início, ciclo de rega, semanas de veg/flor, observações
-- **Solo** — selecione da biblioteca (substratos ou receitas)
-- **Setup** — selecione da biblioteca
-- **Origem** — planta mãe (para árvore de clones)
+- **Básico** — nome, tipo (auto/foto), data de início, ciclo de rega, semanas de veg/flor, observações
+- **Solo** — substrato ou receita da biblioteca + vaso
+- **Setup** — setup da biblioteca
+- **Origem** — planta mãe para árvore de clones + strain vinculada para gráfico de linhagem
 
 ---
 
 ## Registros
 
-Na tela **Planta**, toque em **＋ Registrar** ou nos atalhos:
+Na tela **Planta**, toque em **＋ Registrar** ou nos atalhos de rega e clima.
 
-| Atalho | Abre |
-|---|---|
-| 💧 Rega | Registro com volume, pH, EC e nutrientes |
-| 🌡️ Clima | Registro com temperatura e umidade |
-
-**Tipos de registro disponíveis:**
+**Tipos de registro:**
 
 `📋 Geral` `💧 Rega` `🌡️ Clima` `💡 Luz` `✂️ Poda` `🪢 LST` `🍃 Defoliação` `🪴 Transplante` `🚿 Flush` `🧪 Runoff`
 
 ### Campos automáticos
-- **Dias e semana** calculados a partir da data de início
+- **Dias vivos e semana no ciclo** calculados pela data de início
 - **VPD** calculado ao preencher temperatura + umidade
-- **PPFD e DLI** calculados ao preencher lux + horários LED
+- **PPFD e DLI** calculados ao preencher lux + horários do LED
 
 ### Badges de referência
-Cada valor recebe um badge comparado às tabelas de referência para LM301H indoor, diferenciadas por tipo (auto/foto) e semana do ciclo:
+Cada valor recebe um badge comparado às tabelas por tipo (auto/foto) e semana do ciclo:
 
-- 🟢 Dentro da faixa ideal
-- 🟡 Fora da faixa (tolerância 10%)
-- 🔴 Muito acima ou abaixo
-
----
-
-## Estágio
-
-Toque em **editar** ao lado do estágio. Estágios disponíveis:
-
-`🌰 Germinação` → `🌱 Plântula` → `🍃 Vegetativo` → `🌸 Floração` → `✂️ Colheita`
-
-Ao entrar em **Colheita**, o app abre automaticamente o relatório de colheita.
+🟢 Dentro da faixa ideal · 🟡 Fora da faixa (10% de tolerância) · 🔴 Muito acima ou abaixo
 
 ---
 
 ## Cards de status
 
-Na tela da planta, acima do botão Registrar:
+Exibidos no topo da tela da planta:
 
-- **Próxima rega** — com ou sem nutriente, baseado no ciclo configurado (ex: 2 com + 1 sem)
-- **Countdown** — dias restantes até colheita estimada com barra de progresso
-- **VPD** — valor e zona ideal do último registro com temperatura e umidade
+**💧 Próxima rega** — indica se a próxima deve ser com ou sem nutriente, baseado no ciclo configurado (ex: 2 com + 1 sem).
+
+**⏳ Countdown** — dias restantes até a colheita estimada com barra de progresso. Calculado pelas semanas de veg + flor configuradas.
+
+**🌡️ VPD** — valor e zona ideal com base no último registro que contém temperatura e umidade.
 
 ---
 
@@ -150,23 +116,33 @@ Na tela da planta, acima do botão Registrar:
 |---|---|
 | **Timeline** | Registros agrupados por dia, ordem cronológica reversa |
 | **Registros** | Lista compacta com chips e badges de referência |
-| **Genealogia** | Árvore de clones + botão para ver linhagem genética em gráfico SVG |
+| **Genealogia** | Árvore de clones + botão para gráfico SVG de linhagem genética |
+
+---
+
+## Genealogia e linhagem
+
+A aba **Genealogia** mostra:
+- Árvore de clones entre as plantas cadastradas (plantas com planta mãe definida)
+- Botão para abrir o **gráfico SVG de linhagem** da strain vinculada
+
+O gráfico renderiza automaticamente a árvore de cruzamentos (até 4 gerações) usando as relações pai/mãe cadastradas nas strains da Biblioteca.
 
 ---
 
 ## Analytics
 
-KPIs globais: total de plantas, registros, água e temperatura média.
+KPIs globais: total de plantas, registros, água acumulada, temperatura média.
 
 Gráficos de barras:
-- Ações por tipo (rega, poda, clima...)
-- Água total por planta em litros
+- Ações por tipo
+- Água total por planta
 
-Bloco por planta com médias de temperatura, umidade, pH, EC, dados do setup e solo.
+Bloco por planta com médias de temperatura, umidade, pH e informações do ciclo.
 
 ---
 
-## Dados / Backup
+## Dados e backup
 
 | Opção | Descrição |
 |---|---|
@@ -176,19 +152,15 @@ Bloco por planta com médias de temperatura, umidade, pH, EC, dados do setup e s
 
 Na tela da planta, o botão **CSV** exporta só aquela planta.
 
-> ⚠️ Faça backup regularmente. Os dados ficam no IndexedDB do navegador — limpar o cache apaga tudo.
+> ⚠️ Faça backup regularmente. Os dados ficam no IndexedDB do browser — limpar o cache apaga tudo.
 
 ---
 
-## Relatório de colheita
+## Estágio e relatório de colheita
 
-Gerado automaticamente ao entrar em **Colheita**. Contém:
+Toque em **editar** ao lado do estágio para avançar o ciclo.
 
-- Resumo do ciclo (duração, regas, água total, flushes)
-- Médias ambientais (temp, UR, VPD, pH, EC)
-- Linha do tempo por estágio
-- Campos para peso úmido, peso seco e avaliação (1–5 ⭐)
-- Exportação em CSV
+Ao entrar em **✂️ Colheita**, o relatório abre automaticamente com resumo do ciclo, médias ambientais, timeline de estágios e campos para peso úmido, peso seco e avaliação (1–5 ⭐). Exportável em CSV.
 
 ---
 
@@ -201,14 +173,21 @@ Gerado automaticamente ao entrar em **Colheita**. Contém:
 
 ---
 
-## Deploy
+## Deploy no GitHub Pages
 
 ```bash
 git clone https://github.com/seu-usuario/growlog.git
 cd growlog
+# Substitua os arquivos e faça push
+git add . && git commit -m "v4" && git push
+```
+
+**Settings → Pages → Branch: main → Save**
+
+Para testar localmente:
+
+```bash
 npx serve .
 # ou
 python3 -m http.server 8080
 ```
-
-GitHub Pages: **Settings → Pages → Branch: main → Save**
